@@ -1,0 +1,25 @@
+.container {
+  background-color: orangered;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; /* Add padding to prevent edge collisions */
+}
+
+.grid-wrapper {
+  max-width: 90vw; /* Prevent excessive stretching */
+  width: 100%;
+}
+
+mat-grid-tile {
+  background: rgb(255, 95, 37);
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 0 10px 0 rgb(188, 49, 49);
+}
