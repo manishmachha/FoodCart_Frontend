@@ -23,5 +23,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationDialogComponent {
-  data: { title: string; content: string;btn1:string;btn2:string } = inject(MAT_DIALOG_DATA);
+  data: { title: string; content: string; btn1: string; btn2: string } =
+    inject(MAT_DIALOG_DATA);
 }

@@ -17,7 +17,7 @@
 
   <!-- 🔃 Add -->
   <button class="btn btn-primary" (click)="addRestaurant()">
-    <i class="bi bi-person-plus-fill"></i>
+    <i class="fa-solid fa-utensils"></i>
   </button>
 </div>
 
@@ -45,8 +45,8 @@
     <mat-label>Sort By</mat-label>
     <mat-select [(ngModel)]="sortBy" (selectionChange)="applyFilters()">
       <mat-option value="name">Name</mat-option>
-      <mat-option value="email">Email</mat-option>
-      <mat-option value="role">Role</mat-option>
+      <mat-option value="email">Location</mat-option>
+      <mat-option value="role">Phone</mat-option>
       <mat-option value="id">ID</mat-option>
     </mat-select>
   </mat-form-field>

@@ -9,6 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { NewUser } from '../../models/NewUser';
+import { UserDetailsUpdateDialogComponent } from '../../utils/userDetailsUpdateDialog/user-details-update-dialog/user-details-update-dialog.component';
 @Component({
   selector: 'app-users',
   imports: [
@@ -34,8 +37,12 @@ export class UsersComponent {
   showSearch = false;
   showFilter = false;
   showSort = false;
-
-  constructor(private userService: UserService, private router: Router) {}
+  userToEdit: NewUser;
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((users) => {
@@ -46,6 +53,14 @@ export class UsersComponent {
 
   editUser(id: number) {
     console.log(`Editing user with ID: ${id}`);
+    this.userService.getUserById(id).subscribe((user) => {
+      this.userToEdit = user.data;
+    });
+    this.dialog.open(UserDetailsUpdateDialogComponent, {
+      data: {
+        user: this.userToEdit,
+      },
+    });
   }
 
   deleteUser(id: number) {

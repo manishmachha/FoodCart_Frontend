@@ -17,7 +17,15 @@ export class AdminComponent {
     }
   }
 
-  navigateToUsers() {
-    this.router.navigate(['/admin/users']); // Change '/users' to your target route
-  }
+    navigateToUsers() {
+      this.router.navigate(['/admin/users']); // Change '/users' to your target route
+    }
+
+    navigateToRestaurants() {
+      this.router.navigate(['/admin/restaurants']); // Change '/users' to your target route
+    }
+
+    navigateToFoodItems() {
+      this.router.navigate(['/admin/food-items']); // Change '/users' to your target route
+    }
 }

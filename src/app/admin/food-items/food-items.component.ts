@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -9,8 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FoodItemsService } from '../../services/foodItems/food-items.service';
+
 @Component({
-  selector: 'app-restaurants',
+  selector: 'app-food-items',
+  standalone: true,
   imports: [
     MatListModule,
     CommonModule,
@@ -21,42 +23,42 @@ import { Router } from '@angular/router';
     MatSelectModule,
     FormsModule,
   ],
-  templateUrl: './restaurants.component.html',
-  styleUrl: './restaurants.component.css',
+  templateUrl: './food-items.component.html',
+  styleUrl: './food-items.component.css',
 })
-export class RestaurantsComponent {
-  restaurants: any[] = [];
-  filteredRestaurants: any[] = [];
+export class FoodItemsComponent {
+  foodItems: any[] = [];
+  filteredFoodItems: any[] = [];
   searchTerm: string = '';
   selectedStatus: string = '';
   sortBy: string = '';
-  statuses: string[] = ['true', 'false']; // Define roles here
+  statuses: string[] = ['true', 'false']; // Active status options
   showSearch = false;
   showFilter = false;
   showSort = false;
 
   constructor(
-    private restaurantService: RestaurantService,
+    private foodItemService: FoodItemsService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.restaurantService.getRestaurants().subscribe((restaurants) => {
-      this.restaurants = restaurants.data;
-      this.filteredRestaurants = this.restaurants;
+    this.foodItemService.getFoodItems().subscribe((foodItems) => {
+      this.foodItems = foodItems.data.map(this.convertImage);
+      this.filteredFoodItems = this.foodItems;
     });
   }
 
-  editRestaurant(id: number) {
-    console.log(`Editing restaurant with ID: ${id}`);
+  editFoodItem(id: number) {
+    console.log(`Editing food item with ID: ${id}`);
   }
 
-  deleteRestaurant(id: number) {
-    console.log(`Deleting restaurant with ID: ${id}`);
+  deleteFoodItem(id: number) {
+    console.log(`Deleting food item with ID: ${id}`);
   }
 
-  addRestaurant() {
-    this.router.navigate(['/signup']);
+  addFoodItem() {
+    this.router.navigate(['/add-food-item']);
   }
 
   toggleOption(option: string) {
@@ -76,32 +78,43 @@ export class RestaurantsComponent {
   }
 
   applyFilters(): void {
-    this.filteredRestaurants = this.restaurants.filter(
-      (restaurant) =>
-        restaurant.name
+    this.filteredFoodItems = this.foodItems.filter(
+      (foodItem) =>
+        foodItem.name?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        foodItem.restaurantName
           ?.toLowerCase()
           .includes(this.searchTerm.toLowerCase()) ||
-        restaurant.location
-          ?.toLowerCase()
-          .includes(this.searchTerm.toLowerCase()) ||
-        restaurant.phoneNumber?.includes(this.searchTerm)
+        foodItem.price?.toString().includes(this.searchTerm)
     );
 
     if (this.selectedStatus) {
-      this.filteredRestaurants = this.filteredRestaurants.filter(
-        (restaurant) => restaurant.status === this.selectedStatus
+      this.filteredFoodItems = this.filteredFoodItems.filter(
+        (foodItem) => foodItem.isActive.toString() === this.selectedStatus
       );
     }
 
     if (
       this.sortBy &&
-      this.filteredRestaurants.every((r) => r[this.sortBy] !== undefined)
+      this.filteredFoodItems.every((item) => item[this.sortBy] !== undefined)
     ) {
-      this.filteredRestaurants.sort((a, b) => {
+      this.filteredFoodItems.sort((a, b) => {
         const valA = a[this.sortBy]?.toString() || '';
         const valB = b[this.sortBy]?.toString() || '';
         return valA.localeCompare(valB);
       });
     }
+  }
+
+  // byte[] to image conversion
+  convertImage(data: any) {
+    return {
+      id: data.id,
+      name: data.name,
+      price: data.price,
+      image: 'data:image/jpg;base64,' + data.image,
+      restaurantName: data.restaurantName,
+      restaurantId: data.restaurantId,
+      active: data.active,
+    };
   }
 }

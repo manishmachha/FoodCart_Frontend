@@ -21,4 +21,11 @@ export const routes: Routes = [
         (m) => m.RestaurantsComponent
       ),
   },
+  {
+    path: 'admin/food-items',
+    loadComponent: () =>
+      import('./admin/food-items/food-items.component').then(
+        (m) => m.FoodItemsComponent
+      ),
+  },  
 ];
