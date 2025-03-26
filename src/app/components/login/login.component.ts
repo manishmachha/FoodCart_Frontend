@@ -1,9 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
-import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../utils/confirmation-dialog/confirmation-dialog.component';
 @Component({
@@ -11,7 +9,7 @@ import { ConfirmationDialogComponent } from '../../utils/confirmation-dialog/con
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   encapsulation: ViewEncapsulation.None,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  standalone: false,
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -25,9 +23,13 @@ export class LoginComponent {
     private dialog: MatDialog
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, 
-        // Validators.email
-      ]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ],
+      ],
       password: ['', [Validators.required]],
     });
   }

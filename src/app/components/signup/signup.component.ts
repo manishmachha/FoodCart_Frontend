@@ -1,38 +1,43 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../utils/confirmation-dialog/confirmation-dialog.component';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
-  imports: [
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    CommonModule,
-    RouterModule,
-  ],
   encapsulation: ViewEncapsulation.None,
+  standalone:false
 })
 export class SignupComponent {
+  title: string;
   signupForm: FormGroup;
   showPassword = false;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private router: Router
+  ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
+    });
+  }
+
+  ngOnInit(): void {
+    // Get path variable and set title dynamically
+    this.route.paramMap.subscribe((params) => {
+      const titleName = params.get('titleName'); // Get 'role' from URL
+      console.log(titleName);
+
+      this.title = titleName ? ` ${titleName}` : 'Signup'; // Set dynamic title
     });
   }
 
@@ -45,7 +50,23 @@ export class SignupComponent {
       console.log('Form Submitted', this.signupForm.value);
       this.userService.signup(this.signupForm.value).subscribe(
         (response) => {
-          console.log(response);
+          if (response.status === 201) {
+            this.dialog
+              .open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'User Created',
+                  content: 'Signed up successfully. Login ?',
+                  btn1: 'Yes',
+                  btn2: 'No',
+                },
+              })
+              .afterClosed()
+              .subscribe((res) => {
+                if (res) {
+                  this.router.navigate(['/login']);
+                }
+              });
+          }
         },
         (error) => {
           console.log(error);

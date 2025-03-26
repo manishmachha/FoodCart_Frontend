@@ -26,7 +26,6 @@
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Search Users</mat-label>
     <input matInput [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by name, email, or phone" />
-    <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 </div>
 
@@ -71,7 +70,11 @@
     </mat-card-content>
 
   <mat-card-actions class="user-actions d-flex justify-content-between">
-    <button class="btn btn-success flex-grow-1 mx-2"><i class="bi bi-check-circle-fill"></i></button>
+    <button 
+  class="btn flex-grow-1 mx-2" 
+  [ngClass]="user.isActive ? 'btn-success' : 'btn-secondary'" (click)="updateUser(user.id)">
+  <i class="bi bi-check-circle-fill"></i>
+</button>
     <button class="btn btn-warning flex-grow-1 mx-2" (click)="editUser(user.id)"><i class="bi bi-pencil-fill"></i></button>
     <button class="btn btn-danger flex-grow-1 mx-2" (click)="deleteUser(user.id)"><i class="bi bi-trash-fill"></i></button>
   </mat-card-actions>

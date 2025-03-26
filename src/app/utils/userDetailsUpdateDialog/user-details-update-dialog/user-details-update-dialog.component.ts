@@ -1,4 +1,9 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,8 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../services/user/user.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NewUser } from '../../../models/NewUser';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-signup',
   templateUrl: './user-details-update-dialog.component.html',
@@ -20,21 +25,33 @@ import { NewUser } from '../../../models/NewUser';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
     CommonModule,
     RouterModule,
   ],
-  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserDetailsUpdateDialogComponent {
   signupForm: FormGroup;
   showPassword = false;
-  data: { user: NewUser } = inject(MAT_DIALOG_DATA);
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  data: { userId: number } = inject(MAT_DIALOG_DATA);
+
+  constructor(private fb: FormBuilder, private userService: UserService,private dialogRef: MatDialogRef<UserDetailsUpdateDialogComponent>) {
     this.signupForm = this.fb.group({
-      name: [this.data.user.name  , [Validators.required, Validators.minLength(3)]],
-      email: [this.data.user.email, [Validators.required, Validators.email]],
-      password: [this.data.user.password, [Validators.required, Validators.minLength(6)]],
-      phoneNumber: [this.data.user.phoneNumber, [Validators.required, Validators.pattern('^\\d{10}$')]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
+      role: ['', [Validators.required]],
+      isActive: ['',[Validators.required]],
+    });
+  }
+
+  ngOnInit() {
+    console.log(this.data);
+    this.userService.getUserById(this.data.userId).subscribe((user) => {
+      this.signupForm.patchValue(user.data);
     });
   }
 
@@ -45,9 +62,12 @@ export class UserDetailsUpdateDialogComponent {
   onSubmit() {
     if (this.signupForm.valid) {
       console.log('Form Submitted', this.signupForm.value);
-      this.userService.signup(this.signupForm.value).subscribe(
+      this.userService.updateUser(this.data.userId, this.signupForm.value).subscribe(
         (response) => {
           console.log(response);
+          if(response.status === 200){
+            this.dialogRef.close();
+          }
         },
         (error) => {
           console.log(error);

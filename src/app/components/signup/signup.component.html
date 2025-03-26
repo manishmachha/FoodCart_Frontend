@@ -1,13 +1,13 @@
 <div class="container-fluid d-flex flex-column vh-100 bg-dark">
   <div class="top row bg-dark text-white d-flex justify-content-center align-items-center">
     <div class="text-center">
-      <h1>Sign Up</h1>
-      <h6>Please sign up to get started</h6>
+      <h1>{{ title }}</h1>
+      <h6>Please {{ title }} to get started</h6>
     </div>
   </div>
 
   <div class="bottom row d-flex align-items-center justify-content-center bg-light" >
-    <div class="w-100" style="max-width: 400px;">
+    <div class="w-100" style="max-width: 1000px;">
       <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
         <div class="mb-3 px-3">
           <label class="form-label">FULL NAME</label>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="mt-5 px-3">
-          <button type="submit" class="signup-btn w-100" [disabled]="signupForm.invalid">SIGN UP</button>
+          <button type="submit" class="signup-btn w-100" [disabled]="signupForm.invalid">{{ title }}</button>
         </div>
 
       </form>

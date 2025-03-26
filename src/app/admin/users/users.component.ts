@@ -1,31 +1,16 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user/user.service';
-import { MatListModule } from '@angular/material/list';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { NewUser } from '../../models/NewUser';
 import { UserDetailsUpdateDialogComponent } from '../../utils/userDetailsUpdateDialog/user-details-update-dialog/user-details-update-dialog.component';
+import { ConfirmationDialogComponent } from '../../utils/confirmation-dialog/confirmation-dialog.component';
 @Component({
   selector: 'app-users',
-  imports: [
-    MatListModule,
-    CommonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-  ],
+
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
+  standalone: false,
 })
 export class UsersComponent {
   users: any[] = [];
@@ -53,22 +38,56 @@ export class UsersComponent {
 
   editUser(id: number) {
     console.log(`Editing user with ID: ${id}`);
-    this.userService.getUserById(id).subscribe((user) => {
-      this.userToEdit = user.data;
-    });
-    this.dialog.open(UserDetailsUpdateDialogComponent, {
-      data: {
-        user: this.userToEdit,
-      },
-    });
+
+    this.dialog
+      .open(UserDetailsUpdateDialogComponent, {
+        width: '1000px',
+        data: {
+          userId: id,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => this.ngOnInit());
   }
 
   deleteUser(id: number) {
-    console.log(`Deleting user with ID: ${id}`);
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        data: {
+          title: 'Are you sure',
+          content: `You Want to delete user #${id}?`,
+          btn1: 'Yes',
+          btn2: 'No',
+        },
+      })
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          this.userService.deleteUser(id).subscribe((res) => {
+            console.log(res.message);
+            this.ngOnInit();
+          });
+        }
+      });
+  }
+
+  updateUser(id: number) {
+    const user = this.users.find((user) => user.id === id);
+    console.log(user);
+    if (user.isActive) {
+      user.isActive = false;
+    } else {
+      user.isActive = true;
+    }
+    // console.log(user);
+    this.userService.updateUser(id, user).subscribe((res) => {
+      console.log(res.message);
+      this.ngOnInit();
+    });
   }
 
   addUser() {
-    this.router.navigate(['/signup']);
+    this.router.navigate(['/signup', { titleName: 'Add User' }]);
   }
 
   toggleOption(option: string) {

@@ -1,30 +1,12 @@
 import { Component } from '@angular/core';
-import { MatListModule } from '@angular/material/list';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FoodItemsService } from '../../services/foodItems/food-items.service';
 
 @Component({
   selector: 'app-food-items',
-  standalone: true,
-  imports: [
-    MatListModule,
-    CommonModule,
-    MatCardModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-  ],
   templateUrl: './food-items.component.html',
   styleUrl: './food-items.component.css',
+  standalone: false,
 })
 export class FoodItemsComponent {
   foodItems: any[] = [];

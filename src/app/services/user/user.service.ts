@@ -32,4 +32,16 @@ export class UserService {
       headers: this.getHeaders(),
     });
   }
+
+  updateUser(id: number, user: NewUser): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}`, user, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`, {
+      headers: this.getHeaders(),
+    });
+  }
 }
