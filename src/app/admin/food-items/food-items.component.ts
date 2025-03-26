@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FoodItemsService } from '../../services/foodItems/food-items.service';
+import { FoodItemUpdateDialogComponent } from '../../utils/food-item-update-dialog/food-item-update-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../utils/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-food-items',
@@ -21,7 +24,8 @@ export class FoodItemsComponent {
 
   constructor(
     private foodItemService: FoodItemsService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -32,11 +36,52 @@ export class FoodItemsComponent {
   }
 
   editFoodItem(id: number) {
-    console.log(`Editing food item with ID: ${id}`);
+    this.dialog
+      .open(FoodItemUpdateDialogComponent, {
+        width: '1000px',
+        data: {
+          id: id,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => this.ngOnInit());
+  }
+
+  updateFoodItem(id: number) {
+    let item = this.foodItems.find((item) => item.id === id);
+    item.image = item.image.slice(22);
+    console.log(item);
+    if (item.active) {
+      item.active = false;
+    } else {
+      item.active = true;
+    }
+    // console.log(user);
+    this.foodItemService.updateFoodItem(id, item).subscribe((res) => {
+      console.log(res.message);
+      this.ngOnInit();
+    });
   }
 
   deleteFoodItem(id: number) {
-    console.log(`Deleting food item with ID: ${id}`);
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        data: {
+          title: 'Are you sure',
+          content: `You Want to delete item #${id}?`,
+          btn1: 'Yes',
+          btn2: 'No',
+        },
+      })
+      .afterClosed()
+      .subscribe((res) => {
+        if (res) {
+          this.foodItemService.deleteFoodItem(id).subscribe((res) => {
+            console.log(res.message);
+            this.ngOnInit();
+          });
+        }
+      });
   }
 
   addFoodItem() {

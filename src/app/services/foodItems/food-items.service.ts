@@ -20,6 +20,20 @@ export class FoodItemsService {
   }
 
   getFoodItems(): Observable<any> {
-    return this.http.get(this.baseUrl, { headers: this.getHeaders() });
+    return this.http.get(`${this.baseUrl}`, { headers: this.getHeaders() });
+  }
+
+  getFoodItemById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  updateFoodItem(id: number, foodItem: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}`, foodItem, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  deleteFoodItem(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
 }

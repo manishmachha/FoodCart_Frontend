@@ -12,8 +12,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { HttpClientModule } from '@angular/common/http';
+import { UserDetailsUpdateDialogComponent } from './utils/userDetailsUpdateDialog/user-details-update-dialog/user-details-update-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { FoodItemUpdateDialogComponent } from './utils/food-item-update-dialog/food-item-update-dialog.component';
+
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    SignupComponent,
+    UserDetailsUpdateDialogComponent,
+    FoodItemUpdateDialogComponent
+  ],
   imports: [
     BrowserModule,
     RouterModule,
@@ -24,7 +35,10 @@ import { HttpClientModule } from '@angular/common/http';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,HttpClientModule
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
